@@ -1,22 +1,82 @@
 <!--
  * @Date: 2022-10-09 19:07:35
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-09 19:44:22
+ * @LastEditTime: 2022-10-10 19:07:23
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\views\DataMonitoring.vue
 -->
 <template>
   <div class="container">
-    这是数据检测DOM
+    <!-- container-left -->
+    <div class="container-left">
+      <div class="mapAndTable">
+        <div class="map">
+          <GansuMap :mapData="[1,2,3]"></GansuMap>
+        </div>
+        <div class="table">表格</div>
+      </div>
+      <div class="lineChartTitle">折线图标题</div>
+      <div class="lineChart">折线图</div>
+    </div>
+    <!-- container-right -->
+    <div class="container-right">右边部分</div>
   </div>
 </template>
 
 <script>
+import GansuMap from "@/components/map/GansuMap.vue";
 export default {
-
-}
+  name: "DataMonitoring",
+  components: {
+    GansuMap,
+  },
+  data() {
+    return {
+      array: [],
+    };
+  },
+};
 </script>
 
-<style>
+<style lang="scss" scoped>
+$boxWidth: 1140px;
+$boxRight: 200px;
 .container {
+  //   background-color: red;
+  width: $boxWidth;
+  height: 100%;
+  margin-left: 50%;
+  transform: translate(-50%);
+  display: flex;
+  .container-left {
+    width: $boxWidth - $boxRight;
+    margin-right: 15px;
+    display: flex;
+    flex-direction: column;
+    .mapAndTable {
+      display: flex;
+      .map {
+        width: ($boxWidth - $boxRight) * (34/100);
+        height: ($boxWidth - $boxRight) * (34/100);
+      }
+      .table {
+        height: ($boxWidth - $boxRight) * (34/100);
+        margin-left: 5px;
+        width: ($boxWidth - $boxRight) * (67/100) - 5px;
+        background-color: green;
+      }
+    }
+  }
+  .container-right {
+    width: $boxRight;
+    padding-top: 10px;
+  }
+}
+.lineChartTitle {
+  height: 20px;
+  background-color: blue;
+}
+.lineChart {
+  height: 200px;
+  background-color: purple;
 }
 </style>
