@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-10-09 19:07:35
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-11 18:59:04
+ * @LastEditTime: 2022-10-12 00:48:43
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\views\DataMonitoring.vue
 -->
 <template>
@@ -28,7 +28,9 @@
       </div>
     </div>
     <!-- container-right -->
-    <div class="container-right">右边部分</div>
+    <div class="container-right">
+      <TimeSelection></TimeSelection>
+    </div>
   </div>
 </template>
 
@@ -36,12 +38,14 @@
 import GansuMap from "@/components/map/GansuMap.vue";
 import LineChart from "@/components/chart/LineChart.vue";
 import SortTable from '@/components/table/SortTable.vue'
+import TimeSelection from '@/components/timeSelection/TimeSelection.vue'
 export default {
   name: "DataMonitoring",
   components: {
     GansuMap,
     LineChart,
-    SortTable
+    SortTable,
+    TimeSelection
   },
   data() {
     return {
@@ -81,8 +85,10 @@ $boxRight: 200px;
     }
   }
   .container-right {
+    height: 510px;
     width: $boxRight;
-    padding-top: 10px;
+    background-color: #fefefe;
+    border: 1px solid grey;
   }
 }
 .lineChartTitle {

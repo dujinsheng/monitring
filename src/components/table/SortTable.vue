@@ -1,13 +1,24 @@
 <!--
  * @Date: 2022-10-11 09:55:29
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-12 00:20:35
+ * @LastEditTime: 2022-10-12 06:44:06
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\components\table\SortTable.vue
 -->
 <template>
   <div class="sortTable">
     <div class="tableTitle">
-      甘肃省2022-10-07日PM2.5变化趋势
+      <i class="iconfont icon-biaoge"></i>甘肃省2022-10-07日PM2.5变化趋势
+      <el-popover
+        placement="top-start"
+        title="小时/滚动24小时"
+        width="200"
+        trigger="hover"
+        :content="tipInformation"
+      >
+        <el-button slot="reference"
+          ><i class="iconfont icon-tishi"></i
+        ></el-button>
+      </el-popover>
     </div>
     <el-table
       :data="tableData"
@@ -18,10 +29,18 @@
     >
       <el-table-column label="" width="65">
         <template slot-scope="scope">
-          <el-radio class="radio" v-model="templateSelection" :label="scope.row.city">&nbsp;</el-radio>
+          <el-radio
+            class="radio"
+            v-model="templateSelection"
+            :label="scope.row.city"
+            >&nbsp;</el-radio
+          >
         </template>
       </el-table-column>
-      <el-table-column :prop="this.tableInitData[0].prop" :label="this.tableInitData[0].label"></el-table-column>
+      <el-table-column
+        :prop="this.tableInitData[0].prop"
+        :label="this.tableInitData[0].label"
+      ></el-table-column>
       <el-table-column :label="this.tableInitData[1].label">
         <template slot-scope="scope"
           ><div :class="defineFunctionClassName(scope.row)">
@@ -29,7 +48,10 @@
           </div></template
         >
       </el-table-column>
-      <el-table-column :prop="this.tableInitData[2].prop" :label="this.tableInitData[2].prop"></el-table-column>
+      <el-table-column
+        :prop="this.tableInitData[2].prop"
+        :label="this.tableInitData[2].prop"
+      ></el-table-column>
       <el-table-column
         :prop="this.tableInitData[3].prop"
         :label="this.tableInitData[3].label"
@@ -159,32 +181,34 @@ export default {
       // 这项数据用于配置表格的表头
       tableInitData: [
         {
-          prop: 'sort',
-          label: '排名'
+          prop: "sort",
+          label: "排名",
         },
         {
-          prop: 'city',
-          label: '城市'
+          prop: "city",
+          label: "城市",
         },
         {
-          prop: 'PM',
-          label: 'PM2.5'
+          prop: "PM",
+          label: "PM2.5",
         },
         {
-          prop: 'mainContaminants',
-          label: '主要污染物'
+          prop: "mainContaminants",
+          label: "主要污染物",
         },
         {
-          prop: 'compareOne',
-          label: '环比'
+          prop: "compareOne",
+          label: "环比",
         },
         {
-          prop: 'compareTwo',
-          label: '同比'
-        }
+          prop: "compareTwo",
+          label: "同比",
+        },
       ],
       // 表格被选中的行
-      templateSelection: '兰州'
+      templateSelection: "兰州",
+      // 提示信息
+      tipInformation: "",
     };
   },
   mounted() {},
@@ -262,5 +286,22 @@ export default {
   line-height: 28px;
   color: black;
   font-weight: 700;
+  position: relative;
+  .icon-biaoge {
+    margin-right: 10px;
+    color: #189bc6;
+  }
+  .icon-tishi {
+    position: absolute;
+    right: 0px;
+    top: 5px;
+    color: #189bc6;
+  }
+}
+.el-popover__reference-wrapper .el-button {
+  position: absolute;
+  right: 0px;
+  top: 5px;
+  border: none !important;
 }
 </style>
