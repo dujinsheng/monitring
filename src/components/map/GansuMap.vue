@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-10-10 11:24:16
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-10 19:06:23
+ * @LastEditTime: 2022-10-10 19:14:29
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\components\map\GansuMap.vue
 -->
 <template>
@@ -10,7 +10,7 @@
 
 <script>
 // 引入甘肃省各市的genJson数据
-import geoJson from "@/assets/gs";
+import geoJson from "@/assets/GanSu";
 export default {
   name: "GansuMap",
   props: {

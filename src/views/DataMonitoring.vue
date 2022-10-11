@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-10-09 19:07:35
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-10 19:07:23
+ * @LastEditTime: 2022-10-11 18:59:04
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\views\DataMonitoring.vue
 -->
 <template>
@@ -10,12 +10,22 @@
     <div class="container-left">
       <div class="mapAndTable">
         <div class="map">
-          <GansuMap :mapData="[1,2,3]"></GansuMap>
+          <GansuMap :mapData="[1, 2, 3]"></GansuMap>
         </div>
-        <div class="table">表格</div>
+        <div class="table">
+            <SortTable></SortTable>
+        </div>
       </div>
-      <div class="lineChartTitle">折线图标题</div>
-      <div class="lineChart">折线图</div>
+      <div class="lineChartTitle">
+        <h5>2022-09-25 09时至2022-09-26 08时 兰州市 AQI变化趋势</h5>
+        <el-radio-group v-model="compare">
+          <el-radio-button label="同比"></el-radio-button>
+          <el-radio-button label="环比" class="button-right"></el-radio-button>
+        </el-radio-group>
+      </div>
+      <div class="lineChart">
+        <LineChart></LineChart>
+      </div>
     </div>
     <!-- container-right -->
     <div class="container-right">右边部分</div>
@@ -24,14 +34,19 @@
 
 <script>
 import GansuMap from "@/components/map/GansuMap.vue";
+import LineChart from "@/components/chart/LineChart.vue";
+import SortTable from '@/components/table/SortTable.vue'
 export default {
   name: "DataMonitoring",
   components: {
     GansuMap,
+    LineChart,
+    SortTable
   },
   data() {
     return {
       array: [],
+      compare: "同比",
     };
   },
 };
@@ -62,7 +77,6 @@ $boxRight: 200px;
         height: ($boxWidth - $boxRight) * (34/100);
         margin-left: 5px;
         width: ($boxWidth - $boxRight) * (67/100) - 5px;
-        background-color: green;
       }
     }
   }
@@ -73,10 +87,30 @@ $boxRight: 200px;
 }
 .lineChartTitle {
   height: 20px;
-  background-color: blue;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  h5 {
+    line-height: 30px;
+  }
 }
 .lineChart {
   height: 200px;
-  background-color: purple;
+}
+.button-right {
+  margin-left: 5px;
+  border-left: 1px solid #dcdfe6;
+  border-radius: 5px 5px 0 0;
+}
+::v-deep .el-radio-button {
+  height: 20px;
+  width: 50px;
+}
+::v-deep .el-radio-button__inner {
+  height: 20px !important;
+  width: 50px;
+  text-align: center;
+  padding: 0px;
+  line-height: 20px !important;
 }
 </style>
