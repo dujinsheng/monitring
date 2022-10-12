@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-10-12 00:26:07
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-12 06:24:25
+ * @LastEditTime: 2022-10-12 17:35:24
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\components\timeSelection\TimeSelection.vue
 -->
 <template>
@@ -15,7 +15,8 @@
               v-model="time.hour.startHour"
               type="datetime"
               picker-options="yyyy-MM-dd HH"
-              format="yyyy-MM-dd HH"
+              format="yyyy年MM月dd日 HH时"
+              value-format="yyyy年MM月dd日 HH时"
               placeholder="选择日期时间"
             >
             </el-date-picker>
@@ -23,7 +24,8 @@
               v-model="time.hour.endHour"
               type="datetime"
               picker-options="yyyy-MM-dd HH"
-              format="yyyy-MM-dd HH"
+              format="yyyy年MM月dd日 HH时"
+              value-format="yyyy年MM月dd日 HH时"
               placeholder="选择日期时间"
             >
             </el-date-picker>
@@ -92,13 +94,17 @@
           </el-tab-pane>
         </el-tabs>
         <!-- 搜索按钮 -->
-        <el-button type="primary" icon="el-icon-search" class="searchButton"
+        <el-button
+          @click="searchData"
+          type="primary"
+          icon="el-icon-search"
+          class="searchButton"
           >搜索</el-button
         >
       </el-collapse-item>
       <el-collapse-item title="污染指标" name="2">
         <!-- 第二个区域 -->
-        <div class="mainContaminants">
+        <div class="mainContaminants" v-bind:click="translateContaminants()">
           <el-radio v-model="mainContaminants" label="AQI" :border="true"
             >AQI</el-radio
           >
@@ -125,7 +131,7 @@
     </el-collapse>
     <div class="timeBox">
       <div class="time">
-        <div class="one" @click="showChangePassTime">
+        <div class="one" disabled @click="showChangePassTime">
           <i class="iconfont icon-shangyishou"></i>上一时刻
         </div>
         <div class="two" @click="showContinuesTime">
@@ -135,15 +141,15 @@
           下一时刻<i class="iconfont icon-xiayishou"></i>
         </div>
       </div>
-      <div class="onlyTime">
+      <div class="onlyTime" v-bind:click="translateOnlyTime()">
         <el-radio
           style="width: 100%"
           v-model="onlyTime"
           :label="item"
           :border="true"
-          v-for="item, index in onlyTimeOption"
+          v-for="(item, index) in onlyTimeOption"
           :key="index"
-          >{{item}}</el-radio
+          >{{ item }}</el-radio
         >
       </div>
     </div>
@@ -185,7 +191,7 @@ export default {
       // 第二个区域数据收集
       mainContaminants: "AQI",
       // 第三个区域
-      onlyTime: '',
+      onlyTime: "",
       // 季选择器的选项
       quaterOptions: [
         {
@@ -300,40 +306,122 @@ export default {
         },
       ],
       // onlyTime选择器选项
-      onlyTimeOption: [
-        '2021年8月',
-        "2021年9月",
-        "2021年10月",
-        "2021年11月",
-        "2021年12月",
-        "2022年8月",
-        "2022年9月",
-        "2022年10月"
-      ]
+      onlyTimeOption: [],
+      play: false,
+      timer: null
     };
+  },
+  props: {
+    lineChartData: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+  },
+  watch: {
+    lineChartData: {
+      // eslint-disable-next-line
+      handler(n, o) {
+        this.time.hour.startHour = n.xAxis.data[0];
+        this.time.hour.endHour = n.xAxis.data[n.xAxis.data.length - 1];
+        this.onlyTimeOption = n.xAxis.data;
+        this.onlyTime = n.xAxis.data[0];
+      },
+    },
   },
   created() {},
   mounted() {},
   methods: {
+    // eslint-disable-next-line
     handleChange(val) {
-      console.log(val);
+      // console.log(val);
     },
+    // eslint-disable-next-line
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
     },
     quaterChange() {},
     // 点击上一时刻触发
     showChangePassTime() {
-      
+      let idx;
+      this.onlyTimeOption.forEach((element, index) => {
+        if (this.onlyTime === element) {
+          idx = index;
+        }
+      });
+      if (idx !== 0) {
+        this.onlyTime = this.onlyTimeOption[idx - 1];
+      }
     },
     // 点击播放触发
     showContinuesTime() {
-
+      /* eslint-disable */ 
+      this.play = !this.play
+      if (this.play) {
+          this.timer = setInterval(() => {
+          let idx;
+          this.onlyTimeOption.forEach((element, index) => {
+            if (this.onlyTime === element) {
+              idx = index;
+            }
+          });
+          if (idx < this.onlyTimeOption.length - 1) {
+            this.onlyTime = this.onlyTimeOption[idx + 1];
+          }
+        }, 1000);
+      } else {
+        clearInterval(this.timer)
+      }
     },
     // 点击下一时刻触发
     showFutureTime() {
-      
-    }
+      let idx;
+      this.onlyTimeOption.forEach((element, index) => {
+        if (this.onlyTime === element) {
+          idx = index;
+        }
+      });
+      if (idx < this.onlyTimeOption.length - 1) {
+        this.onlyTime = this.onlyTimeOption[idx + 1];
+      }
+    },
+    translateContaminants() {
+      this.$bus.$emit("translategetContaminants", this.mainContaminants);
+    },
+    translateOnlyTime() {
+      this.$bus.$emit("translategetOnlyTime", this.onlyTime);
+    },
+    // 点击搜索按钮分五种情况进行查询地图，表格，折线图，以及时刻表的数据
+    searchData() {
+      switch (this.activeName) {
+        case "hour":
+          // 需要在这里对输入框进行逻辑校验
+          this.$bus.$emit("translateHourTime", this.time.hour);
+          // 还需要在这里更新我们的时刻列表
+          break;
+        case "day":
+          // 需要在这里对输入框进行逻辑校验
+          this.$bus.$emit("translateDayTime", this.time.day);
+          // 还需要在这里更新我们的时刻列表
+          break;
+        case "month":
+          // 需要在这里对输入框进行逻辑校验
+          this.$bus.$emit("translateMonthTime", this.time.month);
+          // 还需要在这里更新我们的时刻列表
+          break;
+        case "quater":
+          // 需要在这里对输入框进行逻辑校验
+          this.$bus.$emit("translateQuaterTime", this.time.quater);
+          // 还需要在这里更新我们的时刻列表
+          break;
+        case "year":
+          // 需要在这里对输入框进行逻辑校验
+          this.$bus.$emit("translateYearTime", this.time.year);
+          // 还需要在这里更新我们的时刻列表
+          break;
+      }
+    },
   },
 };
 </script>

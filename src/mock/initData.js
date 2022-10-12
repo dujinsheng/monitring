@@ -1,53 +1,181 @@
-<!--
- * @Date: 2022-10-10 23:07:24
+/*
+ * @Date: 2022-10-12 08:46:45
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-12 14:44:28
- * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\components\chart\LineChart.vue
--->
-<template>
-  <div id="lineChart"></div>
-</template>
-
-<script>
-export default {
-  name: "LineChart",
-  data() {
-    return {
-      chartConfigData: null,
+ * @LastEditTime: 2022-10-12 17:42:14
+ * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\mock\initData.js
+ */
+let Mock = require("mockjs")
+Mock.mock('http://zhongkesanqing/get/initData', function () {
+  return {
+    map: {
+      min: 10,
+      max: 80,
+      data: [{ name: "兰州市", value: 34 },
+      { name: "嘉峪关市", value: 56 },
+      { name: "白银市", value: 23 },
+      { name: "金昌市", value: 17 },
+      { name: "天水市", value: 55 },
+      { name: "武威市", value: 22 },
+      { name: "张掖市", value: 19 },
+      { name: "平凉市", value: 34 },
+      { name: "酒泉市", value: 63 },
+      { name: "庆阳市", value: 55 },
+      { name: "定西市", value: 23 },
+      { name: "陇南市", value: 11 },
+      { name: "临夏回族自治州", value: 28 },
+      { name: "甘南藏族自治州", value: 40 },],
+    },
+    table: {
+      tableData: [
+        {
+          sort: 1,
+          city: "陇南市",
+          AQI: 11,
+          mainContaminants: "AQI",
+          compareOne: 2,
+          compareTwo: -1,
+        },
+        {
+          sort: 2,
+          city: "甘南州",
+          AQI: 12,
+          mainContaminants: "AQI",
+          compareOne: 2,
+          compareTwo: -1,
+        },
+        {
+          sort: 3,
+          city: "兰州",
+          AQI: 34,
+          mainContaminants: "AQI",
+          compareOne: 5,
+          compareTwo: 0,
+        },
+        {
+          sort: 4,
+          city: "平凉",
+          AQI: 34,
+          mainContaminants: "无",
+          compareOne: 0,
+          compareTwo: 8,
+        },
+        {
+          sort: 5,
+          city: "武威",
+          AQI: 22,
+          mainContaminants: "AQI",
+          compareOne: 5,
+          compareTwo: 0,
+        },
+        {
+          sort: 6,
+          city: "张掖",
+          AQI: 19,
+          mainContaminants: "AQI",
+          compareOne: 0,
+          compareTwo: 8,
+        },
+        {
+          sort: 7,
+          city: "嘉峪关",
+          AQI: 56,
+          mainContaminants: "AQI",
+          compareOne: 5,
+          compareTwo: 0,
+        },
+        {
+          sort: 8,
+          city: "庆阳",
+          AQI: 55,
+          mainContaminants: "AQI",
+          compareOne: 0,
+          compareTwo: 8,
+        },
+        {
+          sort: 9,
+          city: "天水",
+          AQI: 55,
+          mainContaminants: "AQI",
+          compareOne: 5,
+          compareTwo: 0,
+        },
+        {
+          sort: 10,
+          city: "金昌",
+          AQI: 17,
+          mainContaminants: "AQI",
+          compareOne: 0,
+          compareTwo: 8,
+        },
+      ],
+      // 这项数据用于配置表格的表头
+      tableInitData: [
+        {
+          prop: "sort",
+          label: "排名",
+        },
+        {
+          prop: "city",
+          label: "城市",
+        },
+        {
+          prop: "AQI",
+          label: "AQI",
+        },
+        {
+          prop: "mainContaminants",
+          label: "主要污染物",
+        },
+        {
+          prop: "compareOne",
+          label: "环比",
+        },
+        {
+          prop: "compareTwo",
+          label: "同比",
+        },
+      ],
+      // 表格被选中的行
+      templateSelection: "兰州",
+    },
+    lineChart: {
       // 小时数据
       hourData: {
         xAxis: {
           axisLabel: {
             interval: 1,
             fontSize: "8px",
-            padding: [0, 0, 0, 45],
+            padding: [0, 0, 0, 20],
+            align: 'center',
+            width: '50px',
+
           },
           // 改变图标X轴坐标
           data: [
-            "09月25日 09时",
-            "09月25日 10时",
-            "09月25日 11时",
-            "09月25日 12时",
-            "09月25日 13时",
-            "09月25日 14时",
-            "09月25日 15时",
-            "09月25日 16时",
-            "09月25日 17时",
-            "09月25日 18时",
-            "09月25日 19时",
-            "09月25日 20时",
-            "09月25日 21时",
-            "09月25日 22时",
-            "09月25日 23时",
-            "09月25日 24时",
-            "09月26日 01时",
-            "09月26日 02时",
-            "09月26日 03时",
-            "09月26日 04时",
-            "09月26日 05时",
-            "09月26日 06时",
-            "09月26日 07时",
-            "09月26日 08时",
+            "2022年09月25日 09时",
+            "2022年09月25日 10时",
+            "2022年09月25日 11时",
+            "2022年09月25日 12时",
+            "2022年09月25日 13时",
+            "2022年09月25日 14时",
+            "2022年09月25日 15时",
+            "2022年09月25日 16时",
+            "2022年09月25日 17时",
+            "2022年09月25日 18时",
+            "2022年09月25日 19时",
+            "2022年09月25日 20时",
+            "2022年09月25日 21时",
+            "2022年09月25日 22时",
+            "2022年09月25日 23时",
+            "2022年09月25日 24时",
+            "2022年09月26日 01时",
+            "2022年09月26日 02时",
+            "2022年09月26日 03时",
+            "2022年09月26日 04时",
+            "2022年09月26日 05时",
+            "2022年09月26日 06时",
+            "2022年09月26日 07时",
+            "2022年09月26日 08时",
           ],
         },
         yAxis: {
@@ -449,161 +577,6 @@ export default {
           },
         ],
       },
-    };
-  },
-  props: {
-    lineChartData: {
-      type: Object,
-      default: () => {
-        return {}
-      }
     }
-  },
-  watch: {
-    lineChartData: {
-      // eslint-disable-next-line
-      handler(n, o) {
-        this.chartConfigData = n;
-        this.showLineChart();
-      }
-    }
-  },
-  created() {
-    
-  },
-  mounted() {
-    this.showLineChart();
-  },
-  methods: {
-    showLineChart() {
-      var chartDom = document.getElementById("lineChart");
-      var myChart = this.$echarts.init(chartDom);
-      var option;
-
-      option = {
-        tooltip: {
-          trigger: "axis",
-        },
-        legend: {
-          data: ["实测", "环比上升", "环比下降"],
-          show: true,
-          left: "42%",
-        },
-        grid: {
-          left: "3%",
-          top: "10%",
-          bottom: "20%",
-          width: "97%",
-          height: "70%",
-        },
-        xAxis: {
-          type: "category",
-          boundaryGap: true,
-          // 改变图标X轴坐标
-          data: this.chartConfigData ? this.chartConfigData.xAxis.data : [],
-          axisLabel: this.chartConfigData ? this.chartConfigData.xAxis.axisLabel : {},
-          itemStyle: {
-            width: "10px",
-          },
-          textStyle: {
-            fontSize: "5px",
-          },
-          axisLine: {
-            lineStyle: {
-              color: "black",
-            },
-          },
-        },
-        // 改变图标Y轴坐标的相关设置
-        yAxis: {
-          type: "value",
-          show: true,
-          boundaryGap: false,
-          min: this.chartConfigData ? this.chartConfigData.yAxis.min : 0,
-          max: this.chartConfigData ? this.chartConfigData.yAxis.max : 80,
-          axisLine: {
-            show: true,
-            type: "line",
-            lineStyle: {
-              color: "black",
-            },
-          },
-        },
-        series: [
-          // 折线图纵轴折线图数据
-          {
-            name: "实测",
-            type: "line",
-            lineStyle: {
-              color: "#4cdd4b",
-            },
-            itemStyle: {
-              color: "#4cdd4b",
-            },
-            symbol: "circle",
-            smooth: true,
-            data: this.chartConfigData ? this.chartConfigData.series[0].data : [],
-          },
-          // 折线图上的柱状图起始位置配置数据
-          {
-            name: "PlaceHolder",
-            type: "bar",
-            stack: "Total",
-            itemStyle: {
-              borderColor: "transparent",
-              color: "transparent",
-            },
-            emphasis: {
-              itemStyle: {
-                borderColor: "transparent",
-                color: "transparent",
-              },
-            },
-            data: this.chartConfigData ? this.chartConfigData.series[1].data : [],
-          },
-          // 上升数据
-          {
-            name: "环比上升",
-            type: "bar",
-            stack: "Total",
-            barWidth: "10px",
-            label: {
-              show: true,
-              position: "bottom",
-            },
-            itemStyle: {
-              color: "red",
-            },
-            data: this.chartConfigData ? this.chartConfigData.series[2].data : [],
-          },
-          // 下降数据
-          {
-            name: "环比下降",
-            type: "bar",
-            stack: "Total",
-            barWidth: "10px",
-            label: {
-              show: true,
-              position: "top",
-            },
-            itemStyle: {
-              color: "#37c6f8",
-            },
-
-            data: this.chartConfigData ? this.chartConfigData.series[3].data : [],
-          },
-        ],
-      };
-
-      option && myChart.setOption(option);
-    },
-  },
-};
-</script>
-
-<style lang="scss" scoped>
-#lineChart {
-  height: 100%;
-  width: 100%;
-}
-</style>
+  }
+})

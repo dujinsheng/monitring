@@ -1,13 +1,15 @@
 <!--
  * @Date: 2022-10-11 09:55:29
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-12 06:44:06
+ * @LastEditTime: 2022-10-12 18:03:09
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\components\table\SortTable.vue
 -->
 <template>
   <div class="sortTable">
     <div class="tableTitle">
-      <i class="iconfont icon-biaoge"></i>甘肃省2022-10-07日PM2.5变化趋势
+      <i class="iconfont icon-biaoge"></i>甘肃省{{ pastTime }}日{{
+        contaminants
+      }}变化趋势
       <el-popover
         placement="top-start"
         title="小时/滚动24小时"
@@ -25,7 +27,6 @@
       tooltip-effect="dark"
       :border="true"
       style="width: 100%"
-      @row-click="singleElection"
     >
       <el-table-column label="" width="65">
         <template slot-scope="scope">
@@ -33,15 +34,18 @@
             class="radio"
             v-model="templateSelection"
             :label="scope.row.city"
+            @change="singleElection(scope.row.city)"
             >&nbsp;</el-radio
           >
         </template>
       </el-table-column>
       <el-table-column
-        :prop="this.tableInitData[0].prop"
-        :label="this.tableInitData[0].label"
+        :prop="tableInitData.length ? tableInitData[0].prop : ''"
+        :label="tableInitData.length ? tableInitData[0].label : ''"
       ></el-table-column>
-      <el-table-column :label="this.tableInitData[1].label">
+      <el-table-column
+        :label="tableInitData.length ? tableInitData[1].label : ''"
+      >
         <template slot-scope="scope"
           ><div :class="defineFunctionClassName(scope.row)">
             {{ scope.row.city }}
@@ -49,14 +53,16 @@
         >
       </el-table-column>
       <el-table-column
-        :prop="this.tableInitData[2].prop"
-        :label="this.tableInitData[2].prop"
+        :prop="tableInitData.length ? tableInitData[2].prop : ''"
+        :label="tableInitData.length ? tableInitData[2].label : ''"
       ></el-table-column>
       <el-table-column
-        :prop="this.tableInitData[3].prop"
-        :label="this.tableInitData[3].label"
+        :prop="tableInitData.length ? tableInitData[3].prop : ''"
+        :label="tableInitData.length ? tableInitData[3].label : ''"
       ></el-table-column>
-      <el-table-column :label="this.tableInitData[4].label">
+      <el-table-column
+        :label="tableInitData.length ? tableInitData[4].label : ''"
+      >
         <template slot-scope="scope"
           ><div>
             <i
@@ -71,7 +77,9 @@
           </div></template
         >
       </el-table-column>
-      <el-table-column :label="this.tableInitData[5].label">
+      <el-table-column
+        :label="tableInitData.length ? tableInitData[5].label : ''"
+      >
         <template slot-scope="scope"
           ><div>
             <i
@@ -93,136 +101,69 @@
 <script>
 export default {
   name: "SortTable",
+  props: {
+    tableDataFromTotal: {
+      type: Object,
+      default: () => {
+        return null;
+      },
+    },
+    pastTime: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
       // 表格数据
-      tableData: [
-        {
-          sort: 1,
-          city: "陇南市",
-          PM: 10,
-          mainContaminants: "PM2.5",
-          compareOne: 2,
-          compareTwo: -1,
-        },
-        {
-          sort: 2,
-          city: "甘南州",
-          PM: 12,
-          mainContaminants: "PM2.5",
-          compareOne: 2,
-          compareTwo: -1,
-        },
-        {
-          sort: 3,
-          city: "兰州",
-          PM: 8,
-          mainContaminants: "PM2.5",
-          compareOne: 5,
-          compareTwo: 0,
-        },
-        {
-          sort: 4,
-          city: "平凉",
-          PM: 25,
-          mainContaminants: "无",
-          compareOne: 0,
-          compareTwo: 8,
-        },
-        {
-          sort: 5,
-          city: "武威",
-          PM: 8,
-          mainContaminants: "PM2.5",
-          compareOne: 5,
-          compareTwo: 0,
-        },
-        {
-          sort: 6,
-          city: "张掖",
-          PM: 25,
-          mainContaminants: "PM2.5",
-          compareOne: 0,
-          compareTwo: 8,
-        },
-        {
-          sort: 7,
-          city: "嘉峪关",
-          PM: 8,
-          mainContaminants: "PM2.5",
-          compareOne: 5,
-          compareTwo: 0,
-        },
-        {
-          sort: 8,
-          city: "庆阳",
-          PM: 25,
-          mainContaminants: "PM2.5",
-          compareOne: 0,
-          compareTwo: 8,
-        },
-        {
-          sort: 9,
-          city: "天水",
-          PM: 8,
-          mainContaminants: "PM2.5",
-          compareOne: 5,
-          compareTwo: 0,
-        },
-        {
-          sort: 10,
-          city: "金昌",
-          PM: 25,
-          mainContaminants: "PM2.5",
-          compareOne: 0,
-          compareTwo: 8,
-        },
-      ],
+      tableData: [],
       // 这项数据用于配置表格的表头
-      tableInitData: [
-        {
-          prop: "sort",
-          label: "排名",
-        },
-        {
-          prop: "city",
-          label: "城市",
-        },
-        {
-          prop: "PM",
-          label: "PM2.5",
-        },
-        {
-          prop: "mainContaminants",
-          label: "主要污染物",
-        },
-        {
-          prop: "compareOne",
-          label: "环比",
-        },
-        {
-          prop: "compareTwo",
-          label: "同比",
-        },
-      ],
+      tableInitData: [],
       // 表格被选中的行
-      templateSelection: "兰州",
+      templateSelection: "",
       // 提示信息
       tipInformation: "",
+      // 下面两个变量用于表格标题
+      contaminants: "",
     };
+  },
+  computed: {},
+  watch: {
+    tableDataFromTotal: {
+      // eslint-disable-next-line
+      handler(n, o) {
+        this.contaminants = n.tableData[0].mainContaminants;
+        this.templateSelection = n.templateSelection;
+        this.tableData = n.tableData;
+        this.tableInitData = n.tableInitData;
+      },
+    },
+  },
+  created() {
+    this.$bus.$on("translategetContaminants", this.getContaminants);
   },
   mounted() {},
   methods: {
     // 表格单选功能
-    singleElection(row) {
-      this.templateSelection = row.city;
+    singleElection(city) {
+      this.templateSelection = city;
+      this.$bus.$emit("translategetCity", city);
     },
     // 定义一个函数，用来设置表格数据得背景颜色
     defineFunctionClassName(row) {
-      if (row.PM <= 10) {
+      console.log(row)
+      let data = row.AQI;
+      if (data < 30) {
         return "hierarchyOne";
+      } else if (data < 50) {
+        return "hierarchyTwo";
+      } else {
+        return "hierarchythree";
       }
-      return "hierarchyTwo";
+    },
+    getContaminants(mainContaminants) {
+      // 根据全局事件总线接受数据
+      this.contaminants = mainContaminants;
     },
   },
 };
@@ -264,6 +205,10 @@ export default {
 }
 .hierarchyTwo {
   background-color: #e9dc0f;
+  color: black;
+}
+.hierarchythree {
+  background-color: #f87914;
   color: black;
 }
 .icon-xiangxiajiantoucuxiao {

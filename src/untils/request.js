@@ -1,7 +1,7 @@
 /*
  * @Date: 2022-09-14 16:49:06
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-10 14:10:30
+ * @LastEditTime: 2022-10-12 08:55:29
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\untils\request.js
  */
 // 引入axios
@@ -12,7 +12,7 @@ import axios from 'axios';
 // 新创建axios实例, 并且传入该实例的配置
 const request = axios.create({
     // 设置BaseUrl
-    baseURL: 'http://localhost:8000/',
+    baseURL: 'http://zhongkesanqing',
     // 设置延迟
     timeout: 1000 * 60,
     // 设置请求头

@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-10-10 11:24:16
  * @LastEditors: 顾森
- * @LastEditTime: 2022-10-10 19:14:29
+ * @LastEditTime: 2022-10-12 12:34:27
  * @FilePath: \22年10月9日中科三清面试demo\monitoring\src\components\map\GansuMap.vue
 -->
 <template>
@@ -15,18 +15,31 @@ export default {
   name: "GansuMap",
   props: {
     mapData: {
-      type: Array,
+      type: Object,
       default: () => {
-        return []
+        return {}
       }
     },
   },
   data() {
-    return {};
+    return {
+      // 该数据用来展现地图的层级
+      mapChart: {},
+    };
   },
-  created() {},
+  created() {
+  },
   mounted() {
     this.showMap();
+  },
+  watch: {
+    mapData: {
+       // eslint-disable-next-line 
+      handler(n, o) {
+        this.mapChart = n
+        this.showMap();
+      }
+    }
   },
   methods: {
     showMap() {
@@ -38,16 +51,6 @@ export default {
       this.$echarts.registerMap("GS", geoJson);
       myChart.setOption(
         (option = {
-          title: {
-            // text: "Population Density of Hong Kong （2011）",
-            // subtext: "Data from Wikipedia",
-            // sublink:
-            //   "http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12",
-          },
-          //   tooltip: {
-          //     trigger: "item",
-          //     formatter: "{b}<br/>{c} (p / km2)",
-          //   },
           toolbox: {
             show: false,
             orient: "vertical",
@@ -61,11 +64,8 @@ export default {
           },
           visualMap: {
             show: false,
-            min: 10,
-            max: 80,
-            // text: ["High", "Low"],
-            // realtime: false,
-            // calculable: true,
+            min: this.mapChart.min ? this.mapChart.min : 10,
+            max: this.mapChart.max ? this.mapChart.max : 80,
             inRange: {
               color: ["#2ee62e", "#f3f62a", "#fc0200"],
             },
@@ -79,22 +79,7 @@ export default {
                 // show: true,
               },
               //   后续响应式改变地图的颜色时，只需要修改这个位置的数据
-              data: [
-                { name: "兰州市", value: 12 },
-                { name: "嘉峪关市", value: 11 },
-                { name: "白银市", value: 40 },
-                { name: "金昌市", value: 41 },
-                { name: "天水市", value: 40 },
-                { name: "武威市", value: 10 },
-                { name: "张掖市", value: 15 },
-                { name: "平凉市", value: 16 },
-                { name: "酒泉市", value: 12 },
-                { name: "庆阳市", value: 14 },
-                { name: "定西市", value: 15 },
-                { name: "陇南市", value: 12 },
-                { name: "临夏回族自治州", value: 14 },
-                { name: "甘南藏族自治州", value: 13 },
-              ],
+              data: this.mapChart.data ? this.mapChart.data : [],
               // 自定义名称映射
               nameMap: {
                 "Lan Zhou": "兰州市",
